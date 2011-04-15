@@ -1,0 +1,11 @@
+name: MusicCraft
+main: com.bekvon.bukkit.musiccraft.MusicCraft
+version: 1.4.2
+description: Music Player plugin for Bukkit.
+author: bekvon
+commands:
+  mml:
+    description: Manage / Create MusicCraft Songs.
+    usage: /mml [list|stop]
+           /mml [info|remove|play] [SongName]
+           /mml [save] [SongName] [MML]
