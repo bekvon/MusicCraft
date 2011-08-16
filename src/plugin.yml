@@ -1,6 +1,6 @@
 name: MusicCraft
 main: com.bekvon.bukkit.musiccraft.MusicCraft
-version: 1.4.3
+version: 1.4.4
 description: Music Player plugin for Bukkit.
 author: bekvon
 commands:
