@@ -33,7 +33,7 @@ public class MusicCraftPlayerListener extends PlayerListener {
         {
             MusicCraft.getManager().removePlayersPerformers(event.getPlayer());
         }
-        super.onPlayerQuit(event);
+        //super.onPlayerQuit(event);
     }
 
     @Override

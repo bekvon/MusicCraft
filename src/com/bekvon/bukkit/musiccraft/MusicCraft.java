@@ -70,6 +70,8 @@ public class MusicCraft extends JavaPlugin {
 
     public static boolean hasAuthority(Player player, String permission, boolean def)
     {
+        if(player.hasPermission(permission))
+            return true;
         if(authority == null)
             return def;
         else

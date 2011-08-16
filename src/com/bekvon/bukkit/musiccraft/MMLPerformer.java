@@ -5,6 +5,7 @@
 
 package com.bekvon.bukkit.musiccraft;
 
+import org.bukkit.Note;
 import org.bukkit.block.NoteBlock;
 import org.bukkit.entity.Player;
 
@@ -80,7 +81,8 @@ public class MMLPerformer {
             int thisdelay = delays[i];
             try {
                 if (thisnote < 25 && thisnote >= 0) {
-                    playBlock.setNote(thisnote);
+                    Note note = new Note(thisnote);
+                    playBlock.setNote(note);
                     playBlock.play();
                 }
                 i++;
