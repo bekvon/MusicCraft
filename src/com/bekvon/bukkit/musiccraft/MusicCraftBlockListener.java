@@ -9,15 +9,16 @@ import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.NoteBlock;
 import org.bukkit.block.Sign;
+import org.bukkit.event.EventHandler;
+import org.bukkit.event.Listener;
 import org.bukkit.event.block.BlockBreakEvent;
-import org.bukkit.event.block.BlockListener;
 import org.bukkit.event.block.BlockRedstoneEvent;
 
 /**
  *
  * @author Administrator
  */
-public class MusicCraftBlockListener extends BlockListener {
+public class MusicCraftBlockListener implements Listener {
 
     private MusicCraft parent;
 
@@ -26,7 +27,7 @@ public class MusicCraftBlockListener extends BlockListener {
         parent = in;
     }
 
-    @Override
+    @EventHandler
     public void onBlockRedstoneChange(BlockRedstoneEvent event) {
         if(parent.isEnabled() && MusicCraft.getManager().allowRedstone())
         {
@@ -58,10 +59,9 @@ public class MusicCraftBlockListener extends BlockListener {
                 }
             }
         }
-        super.onBlockRedstoneChange(event);
     }
 
-    @Override
+    @EventHandler
     public void onBlockBreak(BlockBreakEvent event) {
         if (parent.isEnabled() && !event.isCancelled() && event.getBlock().getType() == Material.NOTE_BLOCK) {
             NoteBlock nblock = (NoteBlock) event.getBlock().getState();
@@ -69,7 +69,6 @@ public class MusicCraftBlockListener extends BlockListener {
                 MusicCraft.getManager().stopMMLSong(nblock, event.getPlayer());
             }
         }
-        super.onBlockBreak(event);
     }
 
 }

@@ -5,24 +5,25 @@
 
 package com.bekvon.bukkit.musiccraft;
 
-import com.nijiko.permissions.PermissionHandler;
-import com.nijikokun.bukkit.Permissions.Permissions;
 import java.io.File;
+import java.security.Permissions;
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+
+import net.milkbowl.vault.permission.Permission;
+
 import org.bukkit.Material;
 import org.bukkit.block.Block;
 import org.bukkit.block.NoteBlock;
 import org.bukkit.command.Command;
 import org.bukkit.command.CommandSender;
 import org.bukkit.entity.Player;
-import org.bukkit.event.Event;
-import org.bukkit.event.Event.Priority;
 import org.bukkit.plugin.Plugin;
+import org.bukkit.plugin.RegisteredServiceProvider;
 import org.bukkit.plugin.java.JavaPlugin;
 
 /**
@@ -34,7 +35,7 @@ public class MusicCraft extends JavaPlugin {
     private static MusicCraftBlockListener blistener;
     private static MusicCraftPlayerListener plistener;
     private static MMLManager songManager;
-    private static PermissionHandler authority;
+    public static Permission perms = null;
 
     public void onDisable() {
         Logger.getLogger("Minecraft").log(Level.INFO, "[MusicCraft] Disabling!");
@@ -43,18 +44,16 @@ public class MusicCraft extends JavaPlugin {
 
     public void onEnable() {
         Logger.getLogger("Minecraft").log(Level.INFO, "[MusicCraft] Enabling! Version: " + this.getDescription().getVersion() + " by bekvon");
-        this.getConfiguration().load();
+        this.getConfig();
+        setupPermissions();
         if (songManager == null) {
             plistener = new MusicCraftPlayerListener(this);
             blistener = new MusicCraftBlockListener(this);
-            getServer().getPluginManager().registerEvent(Event.Type.PLAYER_INTERACT, plistener, Priority.Monitor, this);
-            getServer().getPluginManager().registerEvent(Event.Type.BLOCK_BREAK, blistener, Priority.Monitor, this);
-            getServer().getPluginManager().registerEvent(Event.Type.REDSTONE_CHANGE, blistener, Priority.Monitor, this);
-            getServer().getPluginManager().registerEvent(Event.Type.PLAYER_QUIT, plistener, Priority.Monitor, this);
-            this.checkPermissions();
-            songManager = new MMLManager(this.getConfiguration(), new File(this.getDataFolder(), "songs"));
+            getServer().getPluginManager().registerEvents(blistener, this);
+            getServer().getPluginManager().registerEvents(plistener, this);
+            songManager = new MMLManager(this.getConfig(), new File(this.getDataFolder(), "songs"));
         } else {
-            songManager.readConfiguration(this.getConfiguration());
+            songManager.readConfiguration(this.getConfig());
         }
     }
 
@@ -63,31 +62,24 @@ public class MusicCraft extends JavaPlugin {
         return songManager;
     }
 
-    public static PermissionHandler getAuthorityManager()
+    public static Permission getAuthorityManager()
     {
-        return authority;
+        return perms;
     }
 
     public static boolean hasAuthority(Player player, String permission, boolean def)
     {
         if(player.hasPermission(permission))
             return true;
-        if(authority == null)
+        if(perms == null)
             return def;
         else
-            return authority.has(player, permission);
+            return perms.playerHas(player, permission);
+        
+        
     }
 
-    private void checkPermissions() {
-        Plugin p = getServer().getPluginManager().getPlugin("Permissions");
-        if (p != null) {
-            authority = ((Permissions) p).getHandler();
-            Logger.getLogger("Minecraft").log(Level.INFO, "[MusicCraft] Found Permissions Plugin!");
-        } else {
-            authority = null;
-            Logger.getLogger("Minecraft").log(Level.INFO, "[MusicCraft] Permissions Plugin NOT Found!");
-        }
-    }
+  
 
     @Override
     public boolean onCommand(CommandSender sender, Command cmd, String commandLabel, String[] args) {
@@ -298,5 +290,11 @@ public class MusicCraft extends JavaPlugin {
 
     public void onLoad() {
         System.out.println("MusicCraft Loading...");
+    }
+    
+    private boolean setupPermissions() {
+        RegisteredServiceProvider<Permission> rsp = getServer().getServicesManager().getRegistration(Permission.class);
+        perms = rsp.getProvider();
+        return perms != null;
     }
 }

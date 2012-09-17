@@ -11,11 +11,13 @@ import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.Map;
+
 import org.bukkit.Location;
 import org.bukkit.block.Block;
 import org.bukkit.block.NoteBlock;
+import org.bukkit.configuration.Configuration;
+import org.bukkit.configuration.file.FileConfiguration;
 import org.bukkit.entity.Player;
-import org.bukkit.util.config.Configuration;
 
 /**
  *
